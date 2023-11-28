@@ -40,6 +40,7 @@ class PrimitiveProcessor:
         log_file = open(output_path, "w")
         log_file.write(output)
         log_file.close()
+        print(f"Log file has been written to path:\n[{output_path}]")
 
     def __get_memory_index(self, memory_address: str) -> int:
         if len(memory_address) != 2 or memory_address[0] != "H":
