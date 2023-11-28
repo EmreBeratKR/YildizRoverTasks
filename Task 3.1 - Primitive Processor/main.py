@@ -3,8 +3,10 @@ import path_utils as path
 
 
 def main():
-    instructions_path = path.get_path_relative("instructions/instructions_0")
     processor = PrimitiveProcessor()
+    instructions_path = path.get_path_relative("instructions/instructions_0")
+    processor.run_instructions_from_path(instructions_path)
+    instructions_path = path.get_path_relative("instructions/instructions_1")
     processor.run_instructions_from_path(instructions_path)
 
 

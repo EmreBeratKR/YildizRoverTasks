@@ -1,0 +1,7 @@
+output_path="log_1.txt"
+KAYDET H1,3
+KAYDET H2,4
+TOPLATUT H2,H1
+YAZ H2
+CLR
+EGER <,H1,H2
