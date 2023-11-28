@@ -1,10 +1,11 @@
 from primitive_processor import PrimitiveProcessor
+import path_utils as path
 
 
 def main():
+    instructions_path = path.get_path_relative("instructions/instructions_0")
     processor = PrimitiveProcessor()
-    while processor.is_running():
-        processor.update()
+    processor.run_instructions_from_path(instructions_path)
 
 
 if __name__ == '__main__':
