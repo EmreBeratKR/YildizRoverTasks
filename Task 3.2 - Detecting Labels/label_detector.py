@@ -1,6 +1,6 @@
 def contains_label(pixels: list[list[int]]) -> bool:
-    for j in range(0, len(pixels)):
-        for i in range(0, len(pixels[j])):
+    for j in range(1, len(pixels) - 1):
+        for i in range(1, len(pixels[j]) - 1):
             if pixels[i][j] == 0:
                 if pixels[i-1][j-1] != 255:
                     continue
