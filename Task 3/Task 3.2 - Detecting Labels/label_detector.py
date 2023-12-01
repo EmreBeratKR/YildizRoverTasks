@@ -1,3 +1,7 @@
+# Time Complexity: O(n)
+# Space Complexity: O(n)
+# Extra Space Complexity: O(1)
+# n: element count inside the matrix
 def contains_label(pixels: list[list[int]]) -> bool:
     for j in range(1, len(pixels) - 1):
         for i in range(1, len(pixels[j]) - 1):
