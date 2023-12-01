@@ -13,7 +13,7 @@ def print_matrix(matrix: list[list[int]]) -> None:
     print(output)
 
 
-def main():
+def run_test_cases():
     index = 0
     passed_count = 0
     for i in test_cases:
@@ -31,6 +31,10 @@ def main():
         print_matrix(matrix)
         print('-' * 100)
     print(f"{passed_count}/{index} cases are passed!")
+
+
+def main():
+    run_test_cases()
 
 
 if __name__ == '__main__':
