@@ -17,6 +17,7 @@ def main():
     index = 0
     passed_count = 0
     for i in test_cases:
+        index += 1
         matrix = i[0]
         expected_result = i[1]
         result = label_detector.contains_label(matrix)
@@ -29,7 +30,6 @@ def main():
             print("Failed!")
         print_matrix(matrix)
         print('-' * 100)
-        index += 1
     print(f"{passed_count}/{index} cases are passed!")
 
 
