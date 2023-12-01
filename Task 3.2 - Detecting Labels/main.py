@@ -15,6 +15,7 @@ def print_matrix(matrix: list[list[int]]) -> None:
 
 def main():
     index = 0
+    passed_count = 0
     for i in test_cases:
         matrix = i[0]
         expected_result = i[1]
@@ -22,12 +23,14 @@ def main():
         print(f"Case {index}: {result}")
         print(f"Expected result: {expected_result}")
         if expected_result == result:
+            passed_count += 1
             print("Passed!")
         else:
             print("Failed!")
         print_matrix(matrix)
         print('-' * 100)
         index += 1
+    print(f"{passed_count}/{index} cases are passed!")
 
 
 if __name__ == '__main__':
