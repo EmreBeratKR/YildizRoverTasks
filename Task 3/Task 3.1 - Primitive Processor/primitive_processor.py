@@ -61,7 +61,7 @@ class PrimitiveProcessor:
         except ValueError:
             return const.NULL_INDEX
 
-    def __is_memory_initialized(self, index: int) -> float:
+    def __is_memory_initialized(self, index: int) -> bool:
         return self.__memories[index].is_initialized()
 
     def __get_memory_data(self, index: int) -> float:
