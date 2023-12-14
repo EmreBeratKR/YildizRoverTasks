@@ -143,6 +143,12 @@ def find_second_question(img):
     return second_question
 
 
+def get_number_image(number: int):
+    img_path = get_path_relative(f"Numbers/{number}.png")
+    img = cv2.imread(img_path, cv2.COLOR_BGR2RGB)
+    return img
+
+
 def create_test_from_second_questions():
     middle_gap = 50
     questions = []
@@ -151,13 +157,16 @@ def create_test_from_second_questions():
         img_path = get_path_relative(f"Pages/page_{i}.png")
         img = cv2.imread(img_path)
         question = find_second_question(img)
+        number = get_number_image(i + 1)
+        number_height, number_width = number.shape[:2]
+        question[:number_height, :number_width, :3] = number
         questions.append(question)
         print(f"[{i + 1}/{PAGE_COUNT}] Detected a Question!")
     # separate questions by 2 columns
     middle_index = int(len(questions) / 2)
     test_left = cv2.vconcat(questions[:middle_index])
     h1, w1 = test_left.shape[:2]
-    test_right = cv2.vconcat(questions[middle_index + 1:])
+    test_right = cv2.vconcat(questions[middle_index:])
     h2, w2 = test_right.shape[:2]
     # load banner image
     banner_path = get_path_relative("test_banner.png")
