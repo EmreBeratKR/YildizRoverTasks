@@ -5,11 +5,14 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy
 
+
+PAGE_COUNT = 6
 QUESTION_PADDING_TOP = -20
 QUESTION_PADDING_BOTTOM = -20
 QUESTION_WIDTH = 640
 MIN_VERTICAL_GAP_BETWEEN_QUESTIONS = 50
 MAX_QUESTION_COUNT_PER_COLUMN = 2
+CALCULATE_QUESTION_HEIGHT_PRECISELY = False  # True: Precise / False: Fast
 
 NUMBER_COLORS = [(255, 5, 255), (211, 2, 121), (242, 1, 146), (231, 8, 134)]
 BLANK_COLOR = (255, 255, 255)
@@ -102,8 +105,12 @@ def calculate_question_height(img, pos: (int, int)) -> int:
                     break
                 x += 1
             if not is_valid:
-                y += 1
-                target_height = y + MIN_VERTICAL_GAP_BETWEEN_QUESTIONS
+                if CALCULATE_QUESTION_HEIGHT_PRECISELY:
+                    y += 1
+                    target_height = y + MIN_VERTICAL_GAP_BETWEEN_QUESTIONS
+                else:
+                    y = target_height
+                    target_height += MIN_VERTICAL_GAP_BETWEEN_QUESTIONS
                 break
             x = pos[0]
             y += 1
@@ -113,30 +120,56 @@ def calculate_question_height(img, pos: (int, int)) -> int:
 
 
 def find_all_questions(img):
-    height, width, _ = img.shape
+    height, width = img.shape[:2]
     row_rect = (COLUMN_WIDTH, height - COLUMN_POS_Y)
     left_side_questions = detect_questions_in_column(img, LEFT_COLUMN_POS, row_rect)
     right_side_questions = detect_questions_in_column(img, RIGHT_COLUMN_POS, row_rect)
     return left_side_questions + right_side_questions
 
 
+def find_and_show_all_questions():
+    for i in range(PAGE_COUNT):
+        img_path = get_path_relative(f"Pages/page_{i}.png")
+        img = cv2.imread(img_path)
+        find_all_questions(img)
+        show_image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+
+
 def find_second_question(img):
-    height, width, _ = img.shape
+    height, width = img.shape[:2]
     row_rect = (COLUMN_WIDTH, height - COLUMN_POS_Y)
     left_side_questions = detect_questions_in_column(img, LEFT_COLUMN_POS, row_rect)
     second_question = left_side_questions[1]
     return second_question
 
 
-def main():
+def create_test_from_second_questions():
+    middle_gap = 50
     questions = []
-    for i in range(6):
+    for i in range(PAGE_COUNT):
         img_path = get_path_relative(f"Pages/page_{i}.png")
         img = cv2.imread(img_path)
         question = find_second_question(img)
         questions.append(question)
-    test = cv2.vconcat(questions)
+        print(f"[{i + 1}/{PAGE_COUNT}] Detected a Question!")
+    middle_index = int(len(questions) / 2)
+    test_left = cv2.vconcat(questions[:middle_index])
+    h1, w1 = test_left.shape[:2]
+    test_right = cv2.vconcat(questions[middle_index + 1:])
+    h2, w2 = test_right.shape[:2]
+    banner_path = get_path_relative("test_banner.png")
+    banner_img_rgb = cv2.imread(banner_path, cv2.COLOR_BGR2RGB)
+    banner_height, banner_width = banner_img_rgb.shape[:2]
+    gap = int((w1 + w2 - banner_width + middle_gap) / 2)
+    test = numpy.full((max(h1, h2) + banner_height, w1 + w2 + middle_gap, 3), 255, numpy.uint8)
+    test[:banner_height, gap:gap+banner_width, :3] = banner_img_rgb
+    test[banner_height:banner_height+h1, :w1, :3] = test_left
+    test[banner_height:banner_height+h2, w1+middle_gap:w1 + middle_gap + w2, :3] = test_right
     show_image(test)
+
+
+def main():
+    create_test_from_second_questions()
 
 
 if __name__ == '__main__':
