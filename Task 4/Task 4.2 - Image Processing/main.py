@@ -146,25 +146,32 @@ def find_second_question(img):
 def create_test_from_second_questions():
     middle_gap = 50
     questions = []
+    # detect questions
     for i in range(PAGE_COUNT):
         img_path = get_path_relative(f"Pages/page_{i}.png")
         img = cv2.imread(img_path)
         question = find_second_question(img)
         questions.append(question)
         print(f"[{i + 1}/{PAGE_COUNT}] Detected a Question!")
+    # separate questions by 2 columns
     middle_index = int(len(questions) / 2)
     test_left = cv2.vconcat(questions[:middle_index])
     h1, w1 = test_left.shape[:2]
     test_right = cv2.vconcat(questions[middle_index + 1:])
     h2, w2 = test_right.shape[:2]
+    # load banner image
     banner_path = get_path_relative("test_banner.png")
     banner_img_rgb = cv2.imread(banner_path, cv2.COLOR_BGR2RGB)
     banner_height, banner_width = banner_img_rgb.shape[:2]
-    gap = int((w1 + w2 - banner_width + middle_gap) / 2)
-    test = numpy.full((max(h1, h2) + banner_height, w1 + w2 + middle_gap, 3), 255, numpy.uint8)
-    test[:banner_height, gap:gap+banner_width, :3] = banner_img_rgb
-    test[banner_height:banner_height+h1, :w1, :3] = test_left
-    test[banner_height:banner_height+h2, w1+middle_gap:w1 + middle_gap + w2, :3] = test_right
+    banner_margin = int((w1 + w2 - banner_width + middle_gap) / 2)
+    # create pixel matrix for output test
+    test_height = max(h1, h2) + banner_height
+    test_width = w1 + w2 + middle_gap
+    test = numpy.full((test_height, test_width, 3), 255, numpy.uint8)
+    # set pixels
+    test[:banner_height, banner_margin:banner_margin + banner_width, :3] = banner_img_rgb
+    test[banner_height:banner_height + h1, :w1, :3] = test_left
+    test[banner_height:banner_height + h2, w1 + middle_gap:w1 + middle_gap + w2, :3] = test_right
     show_image(test)
 
 
