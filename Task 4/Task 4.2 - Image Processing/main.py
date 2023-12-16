@@ -181,6 +181,8 @@ def create_test_from_second_questions():
     test[:banner_height, banner_margin:banner_margin + banner_width, :3] = banner_img_rgb
     test[banner_height:banner_height + h1, :w1, :3] = test_left
     test[banner_height:banner_height + h2, w1 + middle_gap:w1 + middle_gap + w2, :3] = test_right
+    save_path = get_path_relative("output_test.png")
+    cv2.imwrite(save_path, cv2.cvtColor(test, cv2.COLOR_RGB2BGR))
     show_image(test)
 
 
